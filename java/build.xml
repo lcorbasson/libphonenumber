@@ -9,6 +9,8 @@
   <property name="geocoder.test.dir" value="geocoder/test"/>
   <property name="prefixmapper.src.dir" value="internal/prefixmapper/src"/>
   <property name="prefixmapper.test.dir" value="internal/prefixmapper/test"/>
+  <property name="shellutils.src.dir" value="shellutils/src"/>
+  <property name="shellutils.test.dir" value="shellutils/test"/>
   <property name="build.dir" value="build"/>
   <property name="classes.dir" value="${build.dir}/classes"/>
   <property name="jar.dir" value="${build.dir}/jar"/>
@@ -175,9 +177,9 @@
   <target name="compile" description="Compile Java source."
           depends="build-phone-metadata,build-short-metadata,build-alternate-metadata,build-carrier-data,build-geo-data,build-timezones-data">
     <mkdir dir="${classes.dir}"/>
-    <javac srcdir="${libphonenumber.src.dir};${carrier.src.dir};${geocoder.src.dir};${prefixmapper.src.dir}"
+    <javac srcdir="${libphonenumber.src.dir};${carrier.src.dir};${geocoder.src.dir};${prefixmapper.src.dir};${shellutils.src.dir}"
            destdir="${classes.dir}" classpathref="classpath" includeAntRuntime="false"/>
-    <javac srcdir="${libphonenumber.test.dir};${carrier.test.dir};${geocoder.test.dir};${prefixmapper.test.dir}"
+    <javac srcdir="${libphonenumber.test.dir};${carrier.test.dir};${geocoder.test.dir};${prefixmapper.test.dir};${shellutils.test.dir}"
            destdir="${classes.dir}" classpathref="classpath" debug="on"
            includeAntRuntime="false"/>
   </target>
@@ -267,6 +269,9 @@
       <batchtest fork="no" todir="${report.dir}">
         <fileset dir="${prefixmapper.test.dir}" includes="**/*Test.java"/>
       </batchtest>
+      <batchtest fork="no" todir="${report.dir}">
+        <fileset dir="${shellutils.test.dir}" includes="**/*Test.java"/>
+      </batchtest>
     </junit>
     <fail message="Tests failed. Run 'ant junitreport' for more info."
         if="test.failed"/>
@@ -291,6 +296,7 @@
         <fileset dir="${libphonenumber.test.dir}" includes="**/*${test}.java"/>
         <fileset dir="${carrier.test.dir}" includes="**/*${test}.java"/>
         <fileset dir="${geocoder.test.dir}" includes="**/*${test}.java"/>
+        <fileset dir="${shellutils.test.dir}" includes="**/*${test}.java"/>
       </batchtest>
     </junit>
   </target>

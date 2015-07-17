@@ -16,7 +16,7 @@
  * @author Shaopeng Jia
  */
 
-package com.google.phonenumbers;
+package com.google.i18n.phonenumbers;
 
 import com.google.i18n.phonenumbers.AsYouTypeFormatter;
 import com.google.i18n.phonenumbers.NumberParseException;

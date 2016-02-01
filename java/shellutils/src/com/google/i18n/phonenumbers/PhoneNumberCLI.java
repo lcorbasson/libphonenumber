@@ -30,6 +30,7 @@ import com.google.i18n.phonenumbers.geocoding.PhoneNumberOfflineGeocoder;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -60,36 +61,57 @@ public class PhoneNumberCLI {
         + "international prefix, as a two-letter ISO 3166-2 country code.");
     options.addOption("l", "lang", true, "Set the language to use for the display, as an IETF "
         + "language tag.");
+// options.addOption(OptionBuilder.withLongOpt("file")
+//                                .withDescription("The file to be processed")
+//                                .hasArg()
+//                                .withArgName("FILE")
+//                                .isRequired()
+//                                .create('f'));
+// options.addOption(OptionBuilder.withLongOpt("version")
+//                                .withDescription("Print the version of the application")
+//                                .create('v'));
+// options.addOption(OptionBuilder.withLongOpt("help").create('h'));
+// 
+   String header = "Parse, reformat and validate phone numbers according to ITU conventions for all countries/regions of the world.\n\n";
+   String footer = "\n";
+   String app = "phonenumber";
+// 
   
     CommandLineParser parser = new DefaultParser();
     try {
       CommandLine cmd = parser.parse(options, args);
   
-      if (cmd.hasOption("c")) {
-        defaultCountryCode = cmd.getOptionValue("c");
-      }
-      if (cmd.hasOption("l")) {
-        languageCode = cmd.getOptionValue("l");
-      }
-  
-      PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-  
-      List<String> phoneNumbers = cmd.getArgList();
-  
-      for (String phoneNumber : phoneNumbers) {
-        try {
-          PhoneNumber phoneNumberProto = phoneUtil.parse(phoneNumber, defaultCountryCode);;
-       
-          boolean isValid = phoneUtil.isValidNumber(phoneNumberProto);
+      if (cmd.hasOption("h")) {
+        HelpFormatter help = new HelpFormatter();
+        help.printHelp(app, header, options, footer, true);
+      } else {
+        if (cmd.hasOption("c")) {
+          defaultCountryCode = cmd.getOptionValue("c");
+        }
+        if (cmd.hasOption("l")) {
+          languageCode = cmd.getOptionValue("l");
+        }
     
-          if ((phoneUtil.getRegionCodeForNumber(phoneNumberProto) == defaultCountryCode) 
-              && (phoneUtil.getRegionCodeForNumber(phoneNumberProto) != null)) {
-            System.out.println(phoneUtil.format(phoneNumberProto, PhoneNumberFormat.NATIONAL));
-          } else {
-            System.out.println(phoneUtil.format(phoneNumberProto, PhoneNumberFormat.INTERNATIONAL));
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+    
+        List<String> phoneNumbers = cmd.getArgList();
+    
+        for (String phoneNumber : phoneNumbers) {
+          try {
+            PhoneNumber phoneNumberProto = phoneUtil.parse(phoneNumber, defaultCountryCode);;
+         
+            boolean isValid = phoneUtil.isValidNumber(phoneNumberProto);
+      
+            if ((phoneUtil.getRegionCodeForNumber(phoneNumberProto) == defaultCountryCode) 
+                && (phoneUtil.getRegionCodeForNumber(phoneNumberProto) != null)) {
+              System.out.println(phoneUtil.format(phoneNumberProto, PhoneNumberFormat.NATIONAL));
+            } else {
+              System.out.println(phoneUtil.format(phoneNumberProto, PhoneNumberFormat.INTERNATIONAL));
+            }
+          } catch (NumberParseException e) {
+            System.err.println(phoneNumber + " --- " + defaultCountryCode); // FIXME
+            System.err.println("NumberParseException was thrown: " + e.toString());
           }
-        } catch (NumberParseException e) {
-          System.err.println("NumberParseException was thrown: " + e.toString());
         }
       }
   
